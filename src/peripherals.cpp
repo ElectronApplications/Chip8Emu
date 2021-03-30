@@ -4,6 +4,7 @@
 #include <string>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include "peripherals.hpp"
 
 using namespace std;
@@ -28,6 +29,8 @@ map<uint8_t, int> keys = {
 };
 
 Peripherals::~Peripherals() {
+    Mix_FreeMusic(sound);
+    Mix_CloseAudio();
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -59,6 +62,19 @@ Peripherals::Peripherals(string title) {
         const char *sdlError = SDL_GetError();
         SDL_Quit();
         throw runtime_error(string("SDL_CreateTexture Error: ") + sdlError);
+    }
+
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 4096) == -1) {
+        const char *sdlError = SDL_GetError();
+        SDL_Quit();
+        throw runtime_error(string("Mix_OpenAudio Error: ") + sdlError);
+    }
+
+    sound = Mix_LoadMUS("beep.wav");
+    if(sound == nullptr) {
+        const char *sdlError = SDL_GetError();
+        SDL_Quit();
+        throw runtime_error(string("Mix_LoadMUS Error: ") + sdlError);
     }
     
     pixels = new uint32_t[width*height];
@@ -104,8 +120,7 @@ void Peripherals::clear() {
 }
 
 void Peripherals::beep() {
-    //TODO
-    cout << "Beep" << endl;
+    Mix_PlayMusic(sound, 1);
 }
 
 uint8_t Peripherals::drawSprite(uint8_t* sprite, int x, int y, int n) {

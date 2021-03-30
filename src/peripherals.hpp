@@ -3,6 +3,7 @@
 
 #include <string>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 class Peripherals {
     private:
@@ -13,6 +14,7 @@ class Peripherals {
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_Texture* texture;
+        Mix_Music* sound;
         SDL_Event event;
     public:
         virtual ~Peripherals();
