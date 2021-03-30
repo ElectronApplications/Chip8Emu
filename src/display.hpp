@@ -5,17 +5,22 @@
 
 class Display {
     private:
+        void update();
+
+        uint8_t keyPressed = 255;
         uint32_t* pixels;
         SDL_Window* window;
         SDL_Surface* surface;
         SDL_Renderer* renderer;
         SDL_Texture* texture;
         SDL_Event event;
-        void update();
     public:
         virtual ~Display();
         Display();
         void events();
+        bool isKeyPressed(uint8_t key);
+        uint8_t getKey();
+        void beep();
         void clear();
         uint8_t drawSprite(uint8_t* sprite, int x, int y, int n);
 

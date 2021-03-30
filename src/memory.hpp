@@ -11,6 +11,8 @@ class Memory {
         uint16_t pc;
         uint16_t i;
         uint8_t stackPointer;
+        uint8_t delayTimer;
+        uint8_t soundTimer;
         
         virtual ~Memory();
         Memory(std::string path);

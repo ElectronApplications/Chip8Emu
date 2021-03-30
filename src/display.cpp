@@ -1,9 +1,30 @@
 #include <stdexcept>
+#include <map>
+#include <iostream>
 
 #include <SDL2/SDL.h>
 #include "display.hpp"
 
 using namespace std;
+
+map<uint8_t, int> keys = {
+	{0x0, SDL_SCANCODE_X},
+	{0x1, SDL_SCANCODE_1},
+	{0x2, SDL_SCANCODE_2},
+	{0x3, SDL_SCANCODE_3},
+	{0x4, SDL_SCANCODE_Q},
+	{0x5, SDL_SCANCODE_W},
+	{0x6, SDL_SCANCODE_E},
+	{0x7, SDL_SCANCODE_A},
+	{0x8, SDL_SCANCODE_S},
+	{0x9, SDL_SCANCODE_D},
+	{0xA, SDL_SCANCODE_Z},
+	{0xB, SDL_SCANCODE_C},
+	{0xC, SDL_SCANCODE_4},
+	{0xD, SDL_SCANCODE_R},
+	{0xE, SDL_SCANCODE_F},
+	{0xF, SDL_SCANCODE_V},
+};
 
 Display::~Display() {
     delete pixels;
@@ -52,8 +73,27 @@ void Display::events() {
 				if(event.window.event == SDL_WINDOWEVENT_CLOSE)
 					running = false;
 				break;
+			case SDL_KEYDOWN:
+				SDL_Scancode key = event.key.keysym.scancode;
+				for (auto &i : keys) {
+					if(key == i.second) {
+						keyPressed = i.first;
+						break;
+					}
+				}
+				break;
 		}
 	}
+}
+
+bool Display::isKeyPressed(uint8_t key) {
+	return SDL_GetKeyboardState(NULL)[keys[key]];
+}
+
+uint8_t Display::getKey() {
+	keyPressed = 255;
+	while(keyPressed == 255) {}
+	return keyPressed;
 }
 
 void Display::clear() {
@@ -63,6 +103,11 @@ void Display::clear() {
 	update();
 }
 
+void Display::beep() {
+	//TODO
+	cout << "Beep" << endl;
+}
+
 uint8_t Display::drawSprite(uint8_t* sprite, int x, int y, int n) {
 	uint8_t VF = 0;
 	for (size_t j = 0; j < n; j++) {
@@ -70,12 +115,12 @@ uint8_t Display::drawSprite(uint8_t* sprite, int x, int y, int n) {
 		for (size_t i = 0; i < 8; i++) {
 			if(i+x >= width)
 				break;
-			if((pixels[(j+y)*height + (i+x)] == 0xFFFFFFFF) && (sprite[j] & mask)) {
+			if((pixels[(j+y)*width + (i+x)] == 0xFFFFFFFF) && (sprite[j] & mask)) {
 				VF = 1;
-				pixels[(j+y)*height + (i+x)] = 0xFF000000;
+				pixels[(j+y)*width + (i+x)] = 0xFF000000;
 			}
 			else if(sprite[j] & mask)
-				pixels[(j+y)*height + (i+x)] = 0xFFFFFFFF;
+				pixels[(j+y)*width + (i+x)] = 0xFFFFFFFF;
 			
 			mask >>= 1;
 		}
