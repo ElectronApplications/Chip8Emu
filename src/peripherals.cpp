@@ -1,9 +1,10 @@
 #include <stdexcept>
 #include <map>
 #include <iostream>
+#include <string>
 
 #include <SDL2/SDL.h>
-#include "display.hpp"
+#include "peripherals.hpp"
 
 using namespace std;
 
@@ -26,20 +27,19 @@ map<uint8_t, int> keys = {
     {0xF, SDL_SCANCODE_V},
 };
 
-Display::~Display() {
-    delete pixels;
+Peripherals::~Peripherals() {
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-Display::Display() {
+Peripherals::Peripherals(string title) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         throw runtime_error(string("SDL_Init Error: ") + SDL_GetError());
     }
 
-    window = SDL_CreateWindow("CHIP-8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width*pixelSize, height*pixelSize, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width*pixelSize, height*pixelSize, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         const char *sdlError = SDL_GetError();
         SDL_Quit();
@@ -65,7 +65,7 @@ Display::Display() {
     clear();
 }
 
-void Display::events() {
+void Peripherals::events() {
     while(running) {
         SDL_WaitEvent(&event);
         switch(event.type) {
@@ -86,29 +86,29 @@ void Display::events() {
     }
 }
 
-bool Display::isKeyPressed(uint8_t key) {
+bool Peripherals::isKeyPressed(uint8_t key) {
     return SDL_GetKeyboardState(NULL)[keys[key]];
 }
 
-uint8_t Display::getKey() {
+uint8_t Peripherals::getKey() {
     keyPressed = 255;
     while(keyPressed == 255) {}
     return keyPressed;
 }
 
-void Display::clear() {
+void Peripherals::clear() {
     for (size_t i = 0; i < width*height; i++) {
         pixels[i] = 0xFF000000;
     }
     update();
 }
 
-void Display::beep() {
+void Peripherals::beep() {
     //TODO
     cout << "Beep" << endl;
 }
 
-uint8_t Display::drawSprite(uint8_t* sprite, int x, int y, int n) {
+uint8_t Peripherals::drawSprite(uint8_t* sprite, int x, int y, int n) {
     uint8_t VF = 0;
     for (size_t j = 0; j < n; j++) {
         uint8_t mask = 0x80;
@@ -132,7 +132,7 @@ uint8_t Display::drawSprite(uint8_t* sprite, int x, int y, int n) {
     return VF;
 }
 
-void Display::update() {
+void Peripherals::update() {
     SDL_UpdateTexture(texture, NULL, pixels, width*sizeof(uint32_t));
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);

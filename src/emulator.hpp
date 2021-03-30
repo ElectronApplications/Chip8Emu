@@ -1,12 +1,12 @@
-#include "display.hpp"
+#include "peripherals.hpp"
 #include "memory.hpp"
 
 class Emulator {
     private:
-        Display* display;
+        Peripherals* peripherals;
         Memory* memory;
     public:
-        Emulator(Display* display, Memory* memory);
+        Emulator(Peripherals* peripherals, Memory* memory);
         void timers();
         void execute();
 };

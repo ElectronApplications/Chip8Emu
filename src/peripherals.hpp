@@ -1,22 +1,22 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
+#include <string>
 #include <SDL2/SDL.h>
 
-class Display {
+class Peripherals {
     private:
         void update();
 
         uint8_t keyPressed = 255;
         uint32_t* pixels;
         SDL_Window* window;
-        SDL_Surface* surface;
         SDL_Renderer* renderer;
         SDL_Texture* texture;
         SDL_Event event;
     public:
-        virtual ~Display();
-        Display();
+        virtual ~Peripherals();
+        Peripherals(std::string title);
         void events();
         bool isKeyPressed(uint8_t key);
         uint8_t getKey();

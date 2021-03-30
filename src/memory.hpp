@@ -14,7 +14,6 @@ class Memory {
         uint8_t delayTimer;
         uint8_t soundTimer;
         
-        virtual ~Memory();
         Memory(std::string path);
 };
 

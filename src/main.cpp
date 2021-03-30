@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 
-#include "display.hpp"
+#include "peripherals.hpp"
 #include "memory.hpp"
 #include "emulator.hpp"
 
@@ -15,12 +15,12 @@ int main(int argc, char *argv[]) {
     srand(time(0));
     
     Memory memory(argv[1]);
-    Display display;
-    Emulator emulator(&display, &memory);
+    Peripherals peripherals("CHIP-8: " + string(argv[1]));
+    Emulator emulator(&peripherals, &memory);
 
     thread timers(&Emulator::timers, emulator);
     thread emulatorThread(&Emulator::execute, emulator);
-    display.events();
+    peripherals.events();
 
     timers.join();
     emulatorThread.join();

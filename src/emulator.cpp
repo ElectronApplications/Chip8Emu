@@ -1,28 +1,29 @@
 #include <unistd.h>
 
 #include "emulator.hpp"
+#include "peripherals.hpp"
 
 using namespace std;
 
-Emulator::Emulator(Display* display, Memory* memory) {
-    this->display = display;
+Emulator::Emulator(Peripherals* peripherals, Memory* memory) {
+    this->peripherals = peripherals;
     this->memory = memory;
 }
 
 void Emulator::timers() {
-    while(display->running) {
+    while(peripherals->running) {
         if(memory->delayTimer > 0)
             memory->delayTimer--;
         if(memory->soundTimer > 0) {
             memory->soundTimer--;
-            display->beep();
+            peripherals->beep();
         }
         usleep(1000000/60);
     }
 }
 
 void Emulator::execute() {
-    while(display->running) {
+    while(peripherals->running) {
         uint16_t instruction = (memory->memory[memory->pc] << 8) | memory->memory[memory->pc+1];
         uint8_t arg1 = (instruction & 0x0F00) >> 8;
         uint8_t arg2 = (instruction & 0x00F0) >> 4;
@@ -34,7 +35,7 @@ void Emulator::execute() {
             case 0x0000:
                 switch(instruction) {
                     case 0x00E0:
-                        display->clear();
+                        peripherals->clear();
                         break;
                     case 0x00EE:
                         memory->stackPointer--;
@@ -129,17 +130,17 @@ void Emulator::execute() {
                 int n = arg3;
                 uint8_t* sprite = new uint8_t[n];
                 memcpy(&sprite[0], &memory->memory[memory->i], n);
-                memory->registers[0xF] = display->drawSprite(sprite, x, y, n);
+                memory->registers[0xF] = peripherals->drawSprite(sprite, x, y, n);
                 break;
             }
             case 0xE000:
                 switch(instruction & 0x00FF) {
                     case 0x9E:
-                        if(display->isKeyPressed(memory->registers[arg1]))
+                        if(peripherals->isKeyPressed(memory->registers[arg1]))
                             memory->pc += 2;
                         break;
                     case 0xA1:
-                        if(!display->isKeyPressed(memory->registers[arg1]))
+                        if(!peripherals->isKeyPressed(memory->registers[arg1]))
                             memory->pc += 2;
                         break;
                 }
@@ -161,7 +162,7 @@ void Emulator::execute() {
                             memory->registers[0xF] = 1;
                         break;
                     case 0x0A:
-                        memory->registers[arg1] = display->getKey();
+                        memory->registers[arg1] = peripherals->getKey();
                         break;
                     case 0x29:
                         memory->i = fontStart + ((uint16_t)memory->registers[arg1] * 5);

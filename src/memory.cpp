@@ -25,10 +25,6 @@ uint8_t font[] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-Memory::~Memory() {
-    delete memory;
-}
-
 Memory::Memory(string path) {
     //Read the rom
     ifstream romFile;
