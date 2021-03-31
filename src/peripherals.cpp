@@ -2,6 +2,7 @@
 #include <map>
 #include <iostream>
 #include <string>
+#include <unistd.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -108,7 +109,9 @@ bool Peripherals::isKeyPressed(uint8_t key) {
 
 uint8_t Peripherals::getKey() {
     keyPressed = 255;
-    while(keyPressed == 255 && running) {}
+    while(keyPressed == 255 && running) {
+        usleep(5000);
+    }
     return keyPressed;
 }
 
