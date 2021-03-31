@@ -108,7 +108,7 @@ bool Peripherals::isKeyPressed(uint8_t key) {
 
 uint8_t Peripherals::getKey() {
     keyPressed = 255;
-    while(keyPressed == 255) {}
+    while(keyPressed == 255 && running) {}
     return keyPressed;
 }
 
