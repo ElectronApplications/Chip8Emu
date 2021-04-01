@@ -91,11 +91,13 @@ void Peripherals::events() {
                     running = false;
                 break;
             case SDL_KEYDOWN:
-                SDL_Scancode key = event.key.keysym.scancode;
-                for (auto &i : keys) {
-                    if(key == i.second) {
-                        keyPressed = i.first;
-                        break;
+                if(keyPressed == 255) {
+                    SDL_Scancode key = event.key.keysym.scancode;
+                    for (auto &i : keys) {
+                        if(key == i.second) {
+                            keyPressed = i.first;
+                            break;
+                        }
                     }
                 }
                 break;
