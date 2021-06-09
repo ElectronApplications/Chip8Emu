@@ -3,23 +3,22 @@
 
 #include <string>
 
-class Memory {
-    public:
-        uint8_t* memory;
-        uint8_t* registers;
-        uint16_t* stack;
-        uint16_t pc;
-        uint16_t i;
-        uint8_t stackPointer;
-        uint8_t delayTimer;
-        uint8_t soundTimer;
-        
-        Memory(std::string path);
-};
+#define MEMORY_SIZE 4096
+#define FONT_START 0x50
+#define ROM_START 0x200
+#define STACK_SIZE 32
 
-const int memorySize = 4096;
-const int fontStart = 0x50;
-const int romStart = 0x200;
-const int stackSize = 16;
+struct Memory {
+    uint8_t memory[MEMORY_SIZE];
+    uint16_t stack[STACK_SIZE];
+    uint8_t registers[16];
+    uint16_t pc = ROM_START;
+    uint16_t i = 0;
+    uint8_t stackPointer = 0;
+    uint8_t delayTimer = 0;
+    uint8_t soundTimer = 0;
+    
+    Memory(uint8_t* rom, size_t romsize);
+};
 
 #endif

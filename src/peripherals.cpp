@@ -43,7 +43,7 @@ Peripherals::Peripherals(string title) {
         throw runtime_error(string("SDL_Init Error: ") + SDL_GetError());
     }
 
-    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width*pixelSize, height*pixelSize, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH*PIXEL_SIZE, HEIGHT*PIXEL_SIZE, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         const char *sdlError = SDL_GetError();
         SDL_Quit();
@@ -56,9 +56,9 @@ Peripherals::Peripherals(string title) {
         SDL_Quit();
         throw runtime_error(string("SDL_CreateRenderer Error: ") + sdlError);
     }
-    SDL_RenderSetLogicalSize(renderer, width*pixelSize, height*pixelSize);
+    SDL_RenderSetLogicalSize(renderer, WIDTH*PIXEL_SIZE, HEIGHT*PIXEL_SIZE);
 
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING, width, height);
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING, WIDTH, HEIGHT);
     if (renderer == nullptr) {
         const char *sdlError = SDL_GetError();
         SDL_Quit();
@@ -78,7 +78,6 @@ Peripherals::Peripherals(string title) {
         throw runtime_error(string("Mix_LoadMUS Error: ") + sdlError);
     }
     
-    pixels = new uint32_t[width*height];
     clear();
 }
 
@@ -118,7 +117,7 @@ uint8_t Peripherals::getKey() {
 }
 
 void Peripherals::clear() {
-    for (size_t i = 0; i < width*height; i++) {
+    for (size_t i = 0; i < WIDTH*HEIGHT; i++) {
         pixels[i] = 0xFF000000;
     }
     update();
@@ -133,18 +132,18 @@ uint8_t Peripherals::drawSprite(uint8_t* sprite, int x, int y, int n) {
     for (size_t j = 0; j < n; j++) {
         uint8_t mask = 0x80;
         for (size_t i = 0; i < 8; i++) {
-            if(i+x >= width)
+            if(i+x >= WIDTH)
                 break;
-            if((pixels[(j+y)*width + (i+x)] == 0xFFFFFFFF) && (sprite[j] & mask)) {
+            if((pixels[(j+y)*WIDTH + (i+x)] == 0xFFFFFFFF) && (sprite[j] & mask)) {
                 VF = 1;
-                pixels[(j+y)*width + (i+x)] = 0xFF000000;
+                pixels[(j+y)*WIDTH + (i+x)] = 0xFF000000;
             }
             else if(sprite[j] & mask)
-                pixels[(j+y)*width + (i+x)] = 0xFFFFFFFF;
+                pixels[(j+y)*WIDTH + (i+x)] = 0xFFFFFFFF;
             
             mask >>= 1;
         }
-        if(j+y >= height)
+        if(j+y >= HEIGHT)
             break;
     }
 
@@ -153,7 +152,7 @@ uint8_t Peripherals::drawSprite(uint8_t* sprite, int x, int y, int n) {
 }
 
 void Peripherals::update() {
-    SDL_UpdateTexture(texture, NULL, pixels, width*sizeof(uint32_t));
+    SDL_UpdateTexture(texture, NULL, pixels, WIDTH*sizeof(uint32_t));
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);

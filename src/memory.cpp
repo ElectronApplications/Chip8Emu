@@ -1,12 +1,10 @@
-#include <string>
-#include <fstream>
 #include <cstring>
 
 #include "memory.hpp"
 
 using namespace std;
 
-uint8_t font[] = {
+const uint8_t font[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -25,28 +23,11 @@ uint8_t font[] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-Memory::Memory(string path) {
-    //Read the rom
-    ifstream romFile;
-    romFile.open(path, ofstream::binary);
-    romFile.seekg(0, romFile.end);
-    int romLen = romFile.tellg();
-    romFile.seekg(0, romFile.beg);
-    char* rom = new char[romLen];
-    romFile.read(rom, romLen);
-    romFile.close();
-    
-    //Memory
-    memory = new uint8_t[memorySize];
-    memset(memory, 0, memorySize);
-    memcpy(&memory[fontStart], font, sizeof(font));
-    memcpy(&memory[romStart], rom, romLen);
-
-    //Stack and registers
-    stack = new uint16_t[stackSize];
-    registers = new uint8_t[16];
+Memory::Memory(uint8_t* rom, size_t romsize) {
+    memset(memory, 0, sizeof(memory));
     memset(stack, 0, sizeof(stack));
     memset(registers, 0, sizeof(registers));
 
-    pc = romStart;
+    memcpy(&memory[FONT_START], font, sizeof(font));
+    memcpy(&memory[ROM_START], rom, romsize);
 }

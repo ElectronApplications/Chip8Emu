@@ -5,12 +5,16 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
+#define WIDTH 64
+#define HEIGHT 32
+#define PIXEL_SIZE 12
+
 class Peripherals {
     private:
         void update();
 
         uint8_t keyPressed = 255;
-        uint32_t* pixels;
+        uint32_t pixels[WIDTH*HEIGHT];
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_Texture* texture;
@@ -28,9 +32,5 @@ class Peripherals {
 
         bool running = true;
 };
-
-const int width = 64;
-const int height = 32;
-const int pixelSize = 12;
 
 #endif

@@ -5,9 +5,10 @@
 
 using namespace std;
 
-Emulator::Emulator(Peripherals* peripherals, Memory* memory) {
+Emulator::Emulator(Peripherals* peripherals, Memory* memory, int speed) {
     this->peripherals = peripherals;
     this->memory = memory;
+    this->speed = speed;
 }
 
 void Emulator::timers() {
@@ -92,7 +93,7 @@ void Emulator::execute() {
                         memory->registers[arg1] -= memory->registers[arg2];
                         break;
                     case 0x6:
-                        if(ShiftSetEnable)
+                        if(SHIFT_SET_ENABLE)
                             memory->registers[arg1] = memory->registers[arg2];
                         memory->registers[0xF] = memory->registers[arg1] & 0x01;
                         memory->registers[arg1] >>= 1;
@@ -102,7 +103,7 @@ void Emulator::execute() {
                         memory->registers[arg2] -= memory->registers[arg1];
                         break;
                     case 0xE:
-                        if(ShiftSetEnable)
+                        if(SHIFT_SET_ENABLE)
                             memory->registers[arg1] = memory->registers[arg2];
                         memory->registers[0xF] = (memory->registers[arg1] & 0b10000000) >> 7;
                         memory->registers[arg1] <<= 1;
@@ -118,19 +119,16 @@ void Emulator::execute() {
                 break;
             case 0xB000:
                 memory->pc += instruction & 0x0FFF;
-                if(OffsetJumpRegEnable)
+                if(OFFSET_JUMP_REG_ENABLE)
                     memory->pc += memory->registers[arg1];
                 break;
             case 0xC000:
                 memory->registers[arg1] = (rand() % 256) & (instruction & 0x00FF);
                 break;
             case 0xD000: {
-                int x = memory->registers[arg1] % width;
-                int y = memory->registers[arg2] % height;
-                int n = arg3;
-                uint8_t* sprite = new uint8_t[n];
-                memcpy(&sprite[0], &memory->memory[memory->i], n);
-                memory->registers[0xF] = peripherals->drawSprite(sprite, x, y, n);
+                int x = memory->registers[arg1] % WIDTH;
+                int y = memory->registers[arg2] % HEIGHT;
+                memory->registers[0xF] = peripherals->drawSprite(&memory->memory[memory->i], x, y, arg3);
                 break;
             }
             case 0xE000:
@@ -165,7 +163,7 @@ void Emulator::execute() {
                         memory->registers[arg1] = peripherals->getKey();
                         break;
                     case 0x29:
-                        memory->i = fontStart + ((uint16_t)memory->registers[arg1] * 5);
+                        memory->i = FONT_START + ((uint16_t)memory->registers[arg1] * 5);
                         break;
                     case 0x33:
                         memory->memory[memory->i] = memory->registers[arg1] / 100;
