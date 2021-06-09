@@ -9,7 +9,7 @@ Then the program can be compiled with the command `make` which will use GCC comp
 'chip8' executable will be generated in the 'build' folder.
 
 # Windows
-To compiler the program for Windows you'll need to use MinGW-W64 compiler (port of GCC), MSVC is not supported.\
+To compile the program for Windows you'll need to use MinGW-W64 compiler (port of GCC), MSVC is not supported.\
 Download SDL2 and SDL2_Mixer libraries for MinGW and put '.lib' files in the 'lib' folder, '.h' files in the 'include' folder and '.dll' files in the 'build' folder.\
 Then use the following command:\
 `g++ -g src/*.cpp -o build/chip8.exe -Iinclude -Llib -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -pthread`\
