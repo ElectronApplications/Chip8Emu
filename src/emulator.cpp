@@ -171,10 +171,10 @@ void Emulator::execute() {
                         memory->memory[memory->i+2] = memory->registers[arg1] % 10;
                         break;
                     case 0x55:
-                        memcpy(&memory->memory[memory->i], &memory->registers[0], arg1*2+2);
+                        memcpy(&memory->memory[memory->i], &memory->registers[0], arg1+1);
                         break;
                     case 0x65:
-                        memcpy(&memory->registers[0], &memory->memory[memory->i], arg1*2+2);
+                        memcpy(&memory->registers[0], &memory->memory[memory->i], arg1+1);
                         break;
                 }
                 break;
