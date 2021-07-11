@@ -129,9 +129,9 @@ void Peripherals::beep() {
 
 uint8_t Peripherals::drawSprite(uint8_t* sprite, int x, int y, int n) {
     uint8_t VF = 0;
-    for (size_t j = 0; j < n; j++) {
+    for (int j = 0; j < n; j++) {
         uint8_t mask = 0x80;
-        for (size_t i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             if(i+x >= WIDTH)
                 break;
             if((pixels[(j+y)*WIDTH + (i+x)] == 0xFFFFFFFF) && (sprite[j] & mask)) {
