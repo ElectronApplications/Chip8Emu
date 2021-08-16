@@ -10,7 +10,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     if(argc < 2) {
-        cout << "You need to specify the rom that needs to be booted. e.g: ./chip8 ibmlogo.ch8" << endl;
+        cout << "You need to specify the rom that needs to be booted. e.g: " << argv[0] << " ibmlogo.ch8" << endl;
         return 1;
     }
     srand(time(0));
