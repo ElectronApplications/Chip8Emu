@@ -10,23 +10,23 @@
 
 using namespace std;
 
-map<uint8_t, int> keys = {
-    {0x0, SDL_SCANCODE_X},
-    {0x1, SDL_SCANCODE_1},
-    {0x2, SDL_SCANCODE_2},
-    {0x3, SDL_SCANCODE_3},
-    {0x4, SDL_SCANCODE_Q},
-    {0x5, SDL_SCANCODE_W},
-    {0x6, SDL_SCANCODE_E},
-    {0x7, SDL_SCANCODE_A},
-    {0x8, SDL_SCANCODE_S},
-    {0x9, SDL_SCANCODE_D},
-    {0xA, SDL_SCANCODE_Z},
-    {0xB, SDL_SCANCODE_C},
-    {0xC, SDL_SCANCODE_4},
-    {0xD, SDL_SCANCODE_R},
-    {0xE, SDL_SCANCODE_F},
-    {0xF, SDL_SCANCODE_V},
+uint8_t keys[] = {
+    SDL_SCANCODE_X, // 0
+    SDL_SCANCODE_1, // 1
+    SDL_SCANCODE_2, // 2
+    SDL_SCANCODE_3, // 3
+    SDL_SCANCODE_Q, // 4
+    SDL_SCANCODE_W, // 5
+    SDL_SCANCODE_E, // 6
+    SDL_SCANCODE_A, // 7
+    SDL_SCANCODE_S, // 8
+    SDL_SCANCODE_D, // 9
+    SDL_SCANCODE_Z, // A
+    SDL_SCANCODE_C, // B
+    SDL_SCANCODE_4, // C
+    SDL_SCANCODE_R, // D
+    SDL_SCANCODE_F, // E
+    SDL_SCANCODE_V, // F
 };
 
 Peripherals::~Peripherals() {
@@ -92,9 +92,9 @@ void Peripherals::events() {
             case SDL_KEYDOWN:
                 if(keyPressed == 255) {
                     SDL_Scancode key = event.key.keysym.scancode;
-                    for (auto &i : keys) {
-                        if(key == i.second) {
-                            keyPressed = i.first;
+                    for (int i = 0; i < 16; i++) {
+                        if(keys[i] == key) {
+                            keyPressed = i;
                             break;
                         }
                     }
@@ -117,7 +117,7 @@ uint8_t Peripherals::getKey() {
 }
 
 void Peripherals::clear() {
-    for (size_t i = 0; i < WIDTH*HEIGHT; i++) {
+    for (int i = 0; i < WIDTH*HEIGHT; i++) {
         pixels[i] = 0xFF000000;
     }
     update();
